@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/stylesheets/style.css"></script>
+
+    <title>Document</title>
+</head>
+<body>
+    <div class="bg-zinc-900 p-10 w-full h-screen flex justify-between">
+        <div class="user-info">
+            <h3 class="text-3xl text-white">Welcome <%= user.username %></h3>
+        </div>
+
+        
+        <div class="relative inline-block text-left">
+            <!-- Dropdown Trigger Button -->
+            <button onclick="toggleDropdown()" id="dropdownButton" class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-zinc-800 rounded-md hover:bg-zinc-700 focus:outline-none focus:ring">
+                Menu
+                <svg class="-mr-1 ml-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l5 5 5-5" />
+                </svg>
+            </button>
+
+            <!-- Dropdown Menu -->
+            <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-40 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
+                <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="dropdownButton">
+                    <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Profile</a>
+                    <a href="/edit" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Edit</a>
+                    
+                    <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" onclick="logout()">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle the visibility of the dropdown
+        function toggleDropdown() {
+            const menu = document.getElementById("dropdownMenu");
+            menu.classList.toggle("hidden");
+        }
+
+        // Optional: Close dropdown if user clicks outside
+        window.addEventListener("click", function (e) {
+            const button = document.getElementById("dropdownButton");
+            const menu = document.getElementById("dropdownMenu");
+
+            if (!button.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add("hidden");
+            }
+        });
+
+        // Logout function
+        function logout() {
+            // Clear cookies or local storage if you want
+            // window.location.href = "/logout"; // Optional, if logout is handled by backend
+        }
+    </script>
+</body>
+</html>

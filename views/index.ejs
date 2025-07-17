@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/stylesheets/style.css"></script>
+
+    <title>Test App</title>
+</head>
+<body>
+    <div class=" flex flex-col bg-zinc-900 p-10 w-full h-screen">
+        <h3 class="text-3xl text-white">Create User</h3> 
+
+        <form action="/create" method="POST" class="flex flex-col gap-4 max-w-md">
+  <input
+    class="px-3 py-2 rounded-lg bg-transparent border-2 border-zinc-800 outline-none text-white"
+    type="text"
+    name="username"
+    placeholder="Username"
+    value="<%= form.username || '' %>"
+  />
+  <% if (errors.username) { %>
+    <p class="text-red-400 text-sm"><%= errors.username %></p>
+  <% } %>
+
+  <input
+    class="px-3 py-2 rounded-lg bg-transparent border-2 border-zinc-800 outline-none text-white"
+    type="email"
+    name="email"
+    placeholder="Email"
+    value="<%= form.email || '' %>"
+  />
+  <% if (errors.email) { %>
+    <p class="text-red-400 text-sm"><%= errors.email %></p>
+  <% } %>
+
+  <input
+    class="px-3 py-2 rounded-lg bg-transparent border-2 border-zinc-800 outline-none text-white"
+    type="password"
+    name="password"
+    placeholder="Password"
+  />
+  <% if (errors.password) { %>
+    <p class="text-red-400 text-sm"><%= errors.password %></p>
+  <% } %>
+
+  <input
+    class="px-3 py-2 rounded-lg bg-transparent border-2 border-zinc-800 outline-none text-white"
+    type="text"
+    maxlength="3"
+    type="number"
+    name="age"
+    placeholder="Age"
+    value="<%= form.age || '' %>"
+  />
+  <% if (errors.age) { %>
+    <p class="text-red-400 text-sm"><%= errors.age %></p>
+  <% } %>
+
+  <input
+    class="px-3 py-2 rounded-lg bg-blue-600 text-white border-2 border-zinc-800 outline-none cursor-pointer"
+    type="submit"
+    value="Create User"
+    />
+    <h2 class=" text-white text-center">Or</h2>
+
+
+</form>
+    <button class="px-3 py-2 rounded-lg max-w-[450px] bg-blue-600 text-white border-2 border-zinc-800 outline-none cursor-pointer"
+     onclick="window.location.href='/login'"
+    >User Login</button>
+
+    
+    </div> 
+</body>
+</html>

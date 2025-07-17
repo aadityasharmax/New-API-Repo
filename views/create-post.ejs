@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Create Post</title>
+</head>
+<body class="bg-zinc-900 text-white">
+
+<div class="container mx-auto py-10">
+    <h1 class="text-3xl font-bold mb-6">Create New Post</h1>
+
+    <form action="/post/create" method="POST" enctype="multipart/form-data" class="bg-zinc-800 p-6 rounded-lg shadow-md space-y-4">
+        
+        <!-- Title -->
+        <div>
+            <label class="block text-gray-300 mb-1">Title</label>
+            <input type="text" name="title" placeholder="Enter post title" class="w-full p-2 rounded bg-zinc-700 border border-gray-600" required>
+        </div>
+
+        <!-- Slug -->
+        <div>
+            <label class="block text-gray-300 mb-1">Slug</label>
+            <input type="text" name="slug" placeholder="Enter slug (optional)" class="w-full p-2 rounded bg-zinc-700 border border-gray-600">
+            <p class="text-sm text-gray-400 mt-1">If left blank, slug will be auto-generated from title.</p>
+        </div>
+
+        <!-- Description -->
+        <div>
+            <label class="block text-gray-300 mb-1">Description</label>
+            <textarea name="description" placeholder="Enter post description" class="w-full p-2 rounded bg-zinc-700 border border-gray-600" rows="4" required></textarea>
+        </div>
+
+        <!-- Image Upload -->
+        <div>
+            <label class="block text-gray-300 mb-1">Upload Image</label>
+            <input type="file" name="image" class="block text-gray-400" accept="image/*" required>
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white font-semibold">Create Post</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

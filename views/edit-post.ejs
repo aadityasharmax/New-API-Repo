@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Edit Post</title>
+</head>
+<body class="bg-zinc-900 text-white">
+
+<div class="container mx-auto py-10">
+    <h1 class="text-3xl font-bold mb-6">Edit Post</h1>
+
+    <form action="/post/edit/<%= post._id %>" method="POST" enctype="multipart/form-data" class="bg-zinc-800 p-6 rounded-lg shadow-md space-y-4">
+        
+        <!-- Title -->
+        <div>
+            <label class="block text-gray-300 mb-1">Title</label>
+            <input type="text" name="title" value="<%= post.title %>" class="w-full p-2 rounded bg-zinc-700 border border-gray-600" required>
+        </div>
+
+        <!-- Slug -->
+        <div>
+            <label class="block text-gray-300 mb-1">Slug</label>
+            <input type="text" name="slug" value="<%= post.slug %>" class="w-full p-2 rounded bg-zinc-700 border border-gray-600">
+        </div>
+
+        <!-- Description -->
+        <div>
+            <label class="block text-gray-300 mb-1">Description</label>
+            <textarea name="description" class="w-full p-2 rounded bg-zinc-700 border border-gray-600" rows="4" required><%= post.description %></textarea>
+        </div>
+
+        <!-- Current Image Preview -->
+        <div>
+            <p class="text-gray-400 mb-2">Current Image:</p>
+            <img src="<%= post.image %>" alt="Current Image" class="w-48 h-32 object-cover mb-4 rounded">
+        </div>
+
+        <!-- Upload New Image -->
+        <div>
+            <label class="block text-gray-300 mb-1">Replace Image (Optional)</label>
+            <input type="file" name="image" class="block text-gray-400" accept="image/*">
+        </div>
+
+        <!-- Submit Button -->
+        <div>
+            <button type="submit" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded text-white font-semibold">Update Post</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
