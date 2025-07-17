@@ -19,23 +19,32 @@
             <input type="text" name="title" placeholder="Enter post title" class="w-full p-2 rounded bg-zinc-700 border border-gray-600" required>
         </div>
 
-        <!-- Slug -->
-        <div>
-            <label class="block text-gray-300 mb-1">Slug</label>
-            <input type="text" name="slug" placeholder="Enter slug (optional)" class="w-full p-2 rounded bg-zinc-700 border border-gray-600">
-            <p class="text-sm text-gray-400 mt-1">If left blank, slug will be auto-generated from title.</p>
-        </div>
-
         <!-- Description -->
         <div>
             <label class="block text-gray-300 mb-1">Description</label>
             <textarea name="description" placeholder="Enter post description" class="w-full p-2 rounded bg-zinc-700 border border-gray-600" rows="4" required></textarea>
         </div>
 
-        <!-- Image Upload -->
+
+        <!-- Category -->
+
+        <div>
+            <label class="block text-gray-300 mb-1">Select Category</label>
+            <select name="category" class="w-full p-2 rounded bg-zinc-700 border border-gray-600" required>
+                <option value="">Choose Category</option>
+                <option value="Technology">Technology</option>
+                <option value="Lifestyle">Lifestyle</option>
+                <option value="Education">Education</option>
+                <option value="Business">Business</option>
+                <option value="Others">Others</option>
+            </select>
+        </div>
+
+        <!-- Image Upload with Preview -->
         <div>
             <label class="block text-gray-300 mb-1">Upload Image</label>
-            <input type="file" name="image" class="block text-gray-400" accept="image/*" required>
+            <input type="file" name="image" id="imageInput" class="block text-gray-400" accept="image/*" required>
+            <img id="previewImage" class="mt-4 rounded-lg border border-gray-600 hidden w-64 h-40 object-cover" />
         </div>
 
         <!-- Submit Button -->
@@ -44,6 +53,23 @@
         </div>
     </form>
 </div>
+
+<script>
+    const imageInput = document.getElementById('imageInput');
+    const previewImage = document.getElementById('previewImage');
+
+    imageInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewImage.classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
 
 </body>
 </html>

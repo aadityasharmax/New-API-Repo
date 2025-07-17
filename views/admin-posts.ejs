@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Posts</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white p-10">
+  <div class="flex justify-between mb-6">
+    <h1 class="text-3xl">Manage Posts</h1>
+    <a href="/admin" class="text-blue-400">Back to Admin Dashboard</a>
+  </div>
+  <table class="table-auto w-full bg-zinc-800 text-left rounded-lg">
+    <thead class="bg-zinc-700">
+      <tr>
+        <th class="px-4 py-2">Title</th>
+        <th class="px-4 py-2">Slug</th>
+        <th class="px-4 py-2">Author</th>
+        <th class="px-4 py-2">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% posts.forEach(post => { %>
+        <tr class="border-b border-zinc-700">
+          <td class="px-4 py-2"><%= post.title %></td>
+          <td class="px-4 py-2"><%= post.slug %></td>
+          <td class="px-4 py-2"><%= post.authorName %></td>
+          <td class="px-4 py-2">
+            <a href="/admin/post/edit/<%= post._id %>" class="text-green-500 hover:text-green-700">Edit</a>
+            <form action="/admin/post/delete/<%= post._id %>" method="POST" style="display:inline;">
+              <button class="text-red-500 hover:text-red-700 ml-2" onclick="return confirm('Delete post?')">Delete</button>
+            </form>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</body>
+</html>

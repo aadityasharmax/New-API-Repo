@@ -1,49 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="/stylesheets/style.css"></script>
-
-    <title>Document</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <title>Profile - <%= user.username %></title>
 </head>
-<body>
-    <div class="bg-zinc-900 p-10 w-full h-screen flex justify-between">
-        <div class="user-info">
-            <h3 class="text-3xl text-white">Welcome <%= user.username %></h3>
+
+<body class="bg-zinc-900 text-white">
+    <!-- Header -->
+    <div class="flex justify-between items-center w-full h-20 bg-zinc-800 p-6">
+        <div>
+            <h2 class="text-xl font-bold"><%= user.username %></h2>
+            <p class="text-gray-400">Age: <%= user.age %></p>
         </div>
 
-        
-        <div class="relative inline-block text-left">
-            <!-- Dropdown Trigger Button -->
-            <button onclick="toggleDropdown()" id="dropdownButton" class="inline-flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-zinc-800 rounded-md hover:bg-zinc-700 focus:outline-none focus:ring">
-                Menu
-                <svg class="-mr-1 ml-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l5 5 5-5" />
-                </svg>
-            </button>
+        <div class="flex items-center gap-4">
+            <a href="/post/create"
+                class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white font-semibold">Create Post</a>
+            <a href="/logout"
+                class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded text-white font-semibold">Logout</a>
 
-            <!-- Dropdown Menu -->
-            <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-40 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-                <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="dropdownButton">
-                    <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Profile</a>
-                    <a href="/edit" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Edit</a>
-                    
-                    <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem" onclick="logout()">Logout</a>
+            <!-- Dropdown Container -->
+            <div class="relative">
+                <button onclick="toggleDropdown()" id="dropdownButton"
+                    class="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-zinc-700 rounded-md hover:bg-zinc-600 focus:outline-none">
+                    Menu
+                    <svg class="-mr-1 ml-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 20 20" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8l5 5 5-5" />
+                    </svg>
+                </button>
+
+                <!-- Dropdown Menu -->
+                <div id="dropdownMenu"
+                    class="hidden absolute right-0 mt-2 w-40 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 z-50">
+                    <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="dropdownButton">
+                        <a href="/edit" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            role="menuitem">Edit Profile</a>
+                        <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                            role="menuitem">Logout</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Posts Section -->
+    <div class="p-6">
+        <h1 class="text-2xl font-bold mb-6">Your Posts</h1>
+
+        <% if (posts.length === 0) { %>
+            <p class="text-gray-400">You have not created any posts yet.</p>
+        <% } else { %>
+            <div class="overflow-x-auto">
+                <table class="min-w-full border border-zinc-700 rounded-lg">
+                    <thead>
+                        <tr class="bg-zinc-800 text-left text-gray-300">
+                            <th class="px-4 py-3 border-b border-zinc-700">Image</th>
+                            <th class="px-4 py-3 border-b border-zinc-700">Title</th>
+                            <th class="px-4 py-3 border-b border-zinc-700">Slug</th>
+                            <th class="px-4 py-3 border-b border-zinc-700">Date</th>
+                            <th class="px-4 py-3 border-b border-zinc-700">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% posts.forEach(post => { %>
+                            <tr class="border-b border-zinc-700 hover:bg-zinc-800">
+                                <td class="px-4 py-3">
+                                    <% if (post.image) { %>
+                                        <img src="<%= post.image %>" alt="Post Image" class="w-16 h-16 object-cover rounded">
+                                    <% } else { %>
+                                        <span class="text-gray-500">No Image</span>
+                                    <% } %>
+                                </td>
+                                <td class="px-4 py-3 font-semibold"><%= post.title %></td>
+                                <td class="px-4 py-3 text-gray-400"><%= post.slug %></td>
+                                <td class="px-4 py-3 text-gray-500"><%= post.createdAt.toDateString() %></td>
+                                <td class="px-4 py-3 flex gap-2">
+                                    <a href="/post/edit/<%= post._id %>"
+                                        class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white text-sm">Edit</a>
+                                    <form action="/post/delete/<%= post._id %>" method="POST" style="display:inline;">
+                                        <button type="submit"
+                                            class="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white text-sm">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </div>
+
     <script>
-        // Toggle the visibility of the dropdown
+        // Toggle dropdown visibility
         function toggleDropdown() {
             const menu = document.getElementById("dropdownMenu");
             menu.classList.toggle("hidden");
         }
 
-        // Optional: Close dropdown if user clicks outside
+        // Close dropdown when clicking outside
         window.addEventListener("click", function (e) {
             const button = document.getElementById("dropdownButton");
             const menu = document.getElementById("dropdownMenu");
@@ -52,12 +111,7 @@
                 menu.classList.add("hidden");
             }
         });
-
-        // Logout function
-        function logout() {
-            // Clear cookies or local storage if you want
-            // window.location.href = "/logout"; // Optional, if logout is handled by backend
-        }
     </script>
 </body>
+
 </html>
