@@ -27,16 +27,15 @@
 
 
         <!-- Category -->
-
         <div>
             <label class="block text-gray-300 mb-1">Select Category</label>
             <select name="category" class="w-full p-2 rounded bg-zinc-700 border border-gray-600" required>
                 <option value="">Choose Category</option>
-                <option value="Technology">Technology</option>
-                <option value="Lifestyle">Lifestyle</option>
-                <option value="Education">Education</option>
-                <option value="Business">Business</option>
-                <option value="Others">Others</option>
+                <% categories.forEach(category=> { %>
+                    <option value="<%= category.name %>">
+                        <%= category.name %>
+                    </option>
+                    <% }) %>
             </select>
         </div>
 

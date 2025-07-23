@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Manage Categories</title>
+</head>
+<body class="bg-zinc-900 text-white p-10">
+  <h1 class="text-3xl mb-6">Manage Categories</h1>
+  <div class="my-8 ">
+    <a class="border bg-blue-600 p-2 outline-none rounded " href="/admin/category/add">+ Add New Category</a>
+</div>
+
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+  <% categories.forEach(cat => { %>
+    <a href="/category/<%= cat.name %>" class="block bg-zinc-800 rounded overflow-hidden hover:shadow-lg transition">
+      <img src="<%= cat.image %>" alt="<%= cat.name %>" class="w-full h-40 object-cover">
+      <div class="p-4">
+        <h3 class="text-white text-lg font-semibold"><%= cat.name %></h3>
+      </div>
+    </a>
+  <% }) %>
+</div>
+
+
+</body>
+</html>

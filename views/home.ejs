@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>All Posts</title>
 </head>
-<body class="bg-zinc-900 text-white m-2 p-5">
 
+<body class="bg-zinc-900 text-white m-2 p-5">
     <div class="container mx-auto py-10">
         <!-- Header -->
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold">All Posts</h1>
-            <a class="text-blue-400 hover:underline" href="/register-login">Register / Login</a>
+            <div class="flex gap-4">
+                <a class="text-blue-400 hover:underline" href="/categories">View All Categories</a>
+                <a class="text-blue-400 hover:underline" href="/register-login">Register / Login</a>
+            </div>
         </div>
 
         <!-- Posts Grid -->
@@ -23,25 +27,32 @@
                         <!-- Image -->
                         <img src="<%= post.image %>" alt="<%= post.title %>" class="w-full h-48 object-cover">
 
-                        
-                        
                         <!-- Content -->
                         <div class="p-4">
-                            <h2 class="text-xl font-semibold mb-2"><%= post.title %></h2>
-                            <p class="text-gray-300 mb-3"><%= post.description.substring(0, 80) %>...</p>
-
+                            <h2 class="text-xl font-semibold mb-2">
+                                <%= post.title %>
+                            </h2>
+                            <p class="text-gray-300 mb-3">
+                                <%= post.description.substring(0, 80) %>...
+                            </p>
                             <!-- Category -->
+                            <div class="bg-zinc-800 rounded shadow mb-2">
+                                <p class="text-gray-400">
+                                    Category:
+                                    <a href="/category/<%= post.category %>" class="text-blue-400 hover:underline">
+                                        <%= post.category %>
+                                    </a>
+                                </p>
+                            </div>
 
-                        <div class="bg-zinc-800 rounded shadow mb-2">
-                            <p class="text-gray-400 ">Category: <span class="text-blue-400">
-                                    <%= post.category %>
-                                </span></p>
-                        </div>
-                            
                             <!-- Author and Date -->
                             <div class="flex justify-between text-sm text-gray-400">
-                                <span>By <%= post.authorName %></span>
-                                <span><%= new Date(post.createdAt).toLocaleDateString() %></span>
+                                <span>By <a class="text-blue-300 hover:underline" href="/posts/<%= post.authorName %>">
+                                        <%= post.authorName %>
+                                    </a></span>
+                                <span>
+                                    <%= new Date(post.createdAt).toLocaleDateString() %>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -52,4 +63,5 @@
         </div>
     </div>
 </body>
+
 </html>

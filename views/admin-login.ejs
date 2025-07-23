@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="/stylesheets/style.css"></script>
+
+    <title>Admin Login</title>
+</head>
+<body>
+    <div class="bg-zinc-900 p-10 w-full h-screen">
+        <h3 class="text-3xl text-white mb-2">Admin Login</h3>
+        <form  action="/admin/login" method="post">
+            <input class="px-3 py-2 rounded-lg bg-transparent border-2 border-zinc-800 outline-none text-white " type="email" placeholder="email" name="email">
+            <input class="px-3 py-2 rounded-lg bg-transparent border-2 border-zinc-800 outline-none text-white" type="password" placeholder="password" name="password">
+            <input class="px-3 py-2 rounded-lg bg-blue-600 text-white border-2 border-zinc-800 outline-none" type="submit" value="Login">
+        </form>
+    </div> 
+</body>
+</html>
