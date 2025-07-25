@@ -80,7 +80,7 @@
                                 <td class="px-4 py-3 text-gray-400"><%= post.slug %></td>
                                 <td class="px-4 py-3 text-gray-500"><%= post.createdAt.toDateString() %></td>
                                 <td class="px-4 py-3 flex gap-2">
-                                    <a href="/post/edit/<%= post._id %>"
+                                    <a href="/post/edit/<%= post.slug %>"
                                         class="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white text-sm">Edit</a>
                                     <form action="/post/delete/<%= post._id %>" method="POST" style="display:inline;">
                                         <button type="submit"

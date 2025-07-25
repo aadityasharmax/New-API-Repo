@@ -12,7 +12,7 @@
     <div class=" flex flex-col bg-zinc-900 p-10 w-full h-screen">
         <h3 class="text-3xl text-white">Create User</h3> 
 
-        <form action="/create" method="POST" class="flex flex-col gap-4 max-w-md">
+        <form action="/create" method="POST" class="flex flex-col gap-4 max-w-md" enctype="multipart/form-data">
   <input
     class="px-3 py-2 rounded-lg bg-transparent border-2 border-zinc-800 outline-none text-white"
     type="text"
@@ -57,6 +57,22 @@
   <% if (errors.age) { %>
     <p class="text-red-400 text-sm"><%= errors.age %></p>
   <% } %>
+
+
+  <input
+    class="px-3 py-2 rounded-lg bg-transparent border-2 border-zinc-800 outline-none text-white"
+    type="file"
+    maxlength="3"
+    name="image"
+    placeholder="Profile Image"
+    value="<%= form.image || '' %>"
+  />
+  <% if (errors.age) { %>
+    <p class="text-red-400 text-sm"><%= errors.image %></p>
+  <% } %>
+
+
+  
 
   <input
     class="px-3 py-2 rounded-lg bg-blue-600 text-white border-2 border-zinc-800 outline-none cursor-pointer"

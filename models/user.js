@@ -23,6 +23,11 @@ const userSchema = mongoose.Schema({
         required: true,
     minlength: 6
   },
+  image: {
+    type:  String,
+    required: false,
+    default: "defaultImg.webp"
+  },
   age: {
       type: Number,
       min: 1

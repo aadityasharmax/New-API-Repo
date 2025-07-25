@@ -21,8 +21,8 @@
 
         <!-- Posts Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <% if (posts && posts.length > 0) { %>
-                <% posts.forEach(post => { %>
+            <% if (posts && posts.length> 0) { %>
+                <% posts.forEach(post=> { %>
                     <div class="bg-zinc-800 rounded-lg overflow-hidden shadow-md">
                         <!-- Image -->
                         <img src="<%= post.image %>" alt="<%= post.title %>" class="w-full h-48 object-cover">
@@ -30,7 +30,9 @@
                         <!-- Content -->
                         <div class="p-4">
                             <h2 class="text-xl font-semibold mb-2">
-                                <%= post.title %>
+                                <a href="/post/<%= post.slug %>" class="text-blue-400 hover:underline font-bold">
+                                    <%= post.title %>
+                                </a>
                             </h2>
                             <p class="text-gray-300 mb-3">
                                 <%= post.description.substring(0, 80) %>...
@@ -56,12 +58,29 @@
                             </div>
                         </div>
                     </div>
-                <% }) %>
-            <% } else { %>
-                <p class="text-gray-400 col-span-3 text-center">No posts available.</p>
-            <% } %>
+                    <% }) %>
+                        <% } else { %>
+                            <p class="text-gray-400 col-span-3 text-center">No posts available.</p>
+                            <% } %>
         </div>
     </div>
+
+
+    <div class="flex justify-center mt-6 space-x-4 text-white">
+  <% if (page > 1) { %>
+    <a href="/?page=<%= page - 1 %>" class="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600">Previous</a>
+  <% } %>
+
+  <% for (let i = 1; i <= totalPages; i++) { %>
+    <a href="/?page=<%= i %>" class="px-3 py-1 rounded <%= i === page ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600' %>">
+      <%= i %>
+    </a>
+  <% } %>
+
+  <% if (page < totalPages) { %>
+    <a href="/?page=<%= page + 1 %>" class="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600">Next</a>
+  <% } %>
+</div>
 </body>
 
 </html>

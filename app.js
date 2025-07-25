@@ -32,9 +32,10 @@ function authenticateUser(req, res, next) {
   }
   try {
     const decoded = jwt.verify(token, 'pass');
-    req.user = decoded;
+   req.user = decoded;
     next();
-  } catch (err) {
+  } 
+  catch (err) {
     res.clearCookie('token');
     return res.redirect('/login');
   }
@@ -64,9 +65,9 @@ function redirectIfAuthenticated(req, res, next) {
 
 // Admin-only middleware
 function requireAdmin(req, res, next) {
-  const token = req.cookies.adminToken; // use adminToken
-  if (!token) {
-    return res.redirect('/admin/login'); // redirect to admin login
+  const token = req.cookies.adminToken; 
+  if (!token){
+    return res.redirect('/admin/login'); 
   }
   try {
     const decoded = jwt.verify(token, 'pass');
@@ -161,30 +162,36 @@ app.get('/categories', async (req, res) => {
 
 
 app.get('/', redirectIfAuthenticated, async (req, res) => {
-
   try {
     const selectedCategory = req.query.category || 'all';
-
+    const page = parseInt(req.query.page) || 1;
+    const limit = 5;
+    const skip = (page - 1) * limit;
 
     const categories = await Category.find({ isActive: true }).select('name -_id');
 
-    // Fetch posts based on category
-
-    let posts;
-    if (selectedCategory === 'all') {
-      posts = await postModel.find().sort({ createdAt: -1 });
-    } 
-    
-    else {
-      posts = await postModel.find({ category: selectedCategory }).sort({ createdAt: -1 });
+    let filter = {};
+    if (selectedCategory !== 'all') {
+      filter.category = selectedCategory;
     }
 
+    const totalPosts = await postModel.countDocuments(filter);
+    const totalPages = Math.ceil(totalPosts / limit);
 
-    res.render('home', { posts, categories: categories.map(cat => cat.name), selectedCategory : "all" });
+    const posts = await postModel.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
-  }
+    res.render('home', {
+      posts,
+      categories: categories.map(cat => cat.name),
+      selectedCategory,
+      page,
+      totalPages
+    });
 
-  catch (err) {
+  } catch (err) {
     console.error(err);
     res.status(500).send('Error loading home page');
   }
@@ -193,10 +200,12 @@ app.get('/', redirectIfAuthenticated, async (req, res) => {
 
 
 // Route: User Registration
-app.post('/create', async (req, res) => {
+app.post('/create',upload.single('image'), async (req, res) => {
 
   try {
-    const { username, email, password, age } = req.body;
+    // const image = req.file ? `/uploads/${req.file.filename}` : `/uploads/${defaultImg.webp}`;
+    const image = req.file ? `/uploads/${req.file.filename}` : `/uploads/defaultImg.webp`
+    const { username, email, password, age,  } = req.body;
 
     if (!username || !email || !password || !age) {
       return res.send('All fields required');
@@ -208,10 +217,11 @@ app.post('/create', async (req, res) => {
       email,
       password: hashedPassword,
       age: Number(age),
+      image: image,
       isAdmin: false
     });
 
-    const token = jwt.sign({ username, email, age }, 'pass');
+    const token = jwt.sign({ username, email, age, image }, 'pass');
     res.cookie('token', token, { httpOnly: true });
     res.redirect('/dashboard');
   } 
@@ -266,7 +276,6 @@ app.post('/login', async (req, res) => {
 });
 
 
-
 // Route: Show Create Post Form
 app.get('/post/create', authenticateUser, async (req, res) => {
   const activeCategories = await Category.find({ isActive: true });
@@ -298,6 +307,7 @@ app.post('/post/create', authenticateUser, upload.single('image'), async (req, r
     authorName: req.user.username
   });
   res.redirect('/dashboard');
+  console.log("Post created with slug:", finalSlug);
 }
 );
 
@@ -359,9 +369,10 @@ app.get('/dashboard', authenticateUser, async (req, res) => {
 
 
 // Route: Show Edit Post Form
-app.get('/post/edit/:id', authenticateUser, async (req, res) => {
-  const post = await postModel.findById(req.params.id);
+app.get('/post/edit/:slug', authenticateUser, async (req, res) => {
+  const post = await postModel.findOne({slug:req.params.slug});
   if (!post || post.authorEmail !== req.user.email) {
+    console.log("Post found:", post);
     return res.status(403).send('Unauthorized');
   }
   res.render('edit-post', { post });
@@ -369,14 +380,19 @@ app.get('/post/edit/:id', authenticateUser, async (req, res) => {
 
 
 // Route: Handle Edit Post Form
-app.post('/post/edit/:id', authenticateUser, upload.single('image'), async (req, res) => {
+app.post('/post/edit/:slug', authenticateUser, upload.single('image'), async (req, res) => {
   const { title, slug, description } = req.body;
   let finalSlug = slug ? slugify(slug, { lower: true, strict: true }) : slugify(title, { lower: true, strict: true });
 
+  // const existing = await postModel.findOne({
+  //   slug: finalSlug,
+  //   slug: { $ne: req.params.slug }
+  // });
+
   const existing = await postModel.findOne({
-    slug: finalSlug,
-    _id: { $ne: req.params.id }
-  });
+  slug: finalSlug,
+  _id: { $ne: (await postModel.findOne({ slug: req.params.slug }))?._id }
+}); 
 
   if (existing) {
     finalSlug = `${finalSlug}-${Date.now()}`;
@@ -387,7 +403,7 @@ app.post('/post/edit/:id', authenticateUser, upload.single('image'), async (req,
     updatedData.image = `/uploads/${req.file.filename}`;
   }
 
-  await postModel.findByIdAndUpdate(req.params.id, updatedData);
+  await postModel.findOneAndUpdate({ slug: req.params.slug }, updatedData);
   res.redirect('/dashboard');
 }
 );
@@ -416,12 +432,13 @@ app.get('/posts/:authorName', async (req, res) => {
     const posts = await postModel.find({ authorName }).sort({ createdAt: -1 });
 
     if (!posts || posts.length === 0) {
+
       return res.render('author-posts', { posts: [], authorName });
     }
 
     res.render('author-posts', { posts, authorName });
   } 
-  
+   
   catch (err) {
     console.error(err);
     res.status(500).send('Error fetching author posts');
@@ -442,17 +459,25 @@ app.get('/category/:name', async (req, res) => {
     // Fetch posts for this category
     const posts = await postModel.find({ category: categoryName }).sort({ createdAt: -1 });
 
-    res.render('home', { 
-      posts, 
-      categories: categories.map(cat => cat.name),
-      selectedCategory: categoryName
-    });
-  } catch (err) {
+    res.render('home', { posts, categories: categories.map(cat => cat.name), selectedCategory: categoryName });
+  } 
+  
+  catch (err) {
     console.error(err);
     res.status(500).send('Error loading category posts');
   }
 });
 
+
+// Show post after clicking on it 
+
+app.get('/post/:slug', async (req, res) => {
+  const post = await postModel.findOne({ slug: req.params.slug });
+  if (!post) {
+    return res.status(404).send('Post not found');
+  }
+  res.render('post-detail', { post });
+});
 
 
 
@@ -502,8 +527,7 @@ app.post('/admin/edit/:id', requireAdmin, async (req, res) => {
 app.get('/admin/post/edit/:id', requireAdmin, async (req, res) => {
   try {
     const post = await postModel.findById(req.params.id);
-    const categories = await Category.find({ isActive: true }); // Fetch active categories
-    
+    const categories = await Category.find({ isActive: true }); 
     if (!post){
        return res.status(404).send('Post not found');
     }
@@ -560,14 +584,18 @@ app.post('/admin/category/add', requireAdmin, upload.single('image'), async (req
   console.log("FILE:", req.file);
 
   try {
-    const { name } = req.body;
+    const { name, description } = req.body;
     const image = req.file ? `/uploads/${req.file.filename}` : '';
 
     if (!name || !image) {
       return res.status(400).send("Category name and image are required");
     }
 
-    await Category.create({ name: name.trim(), image });
+    await Category.create({
+    name: String(name).trim(), 
+    description: String(description).trim(), 
+    image
+  });
     res.redirect('/admin/categories');
   } 
   
@@ -600,10 +628,76 @@ app.post('/admin/post/edit/:id', requireAdmin, upload.single('image'), async (re
 }
 );
 
+
+// Admin edit category
+
+// Show Edit Category Form
+app.get('/admin/category/edit/:id', requireAdmin, async (req, res) => {
+  try {
+    const category = await Category.findById(req.params.id);
+    if (!category) return res.status(404).send('Category not found');
+    res.render('admin-edit-category', { category });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+
+// Post 
+
+app.post('/admin/category/edit/:id', requireAdmin, upload.single('image'), async (req, res) => {
+  try {
+    const { name, description } = req.body;
+
+    const category = await Category.findById(req.params.id);
+    if (!category){
+      return res.status(404).send('Category not found');
+    }
+
+    category.name = name.trim();
+    category.description = description.trim();
+
+    if (req.file) {
+      category.image = `/uploads/${req.file.filename}`;
+    }
+
+    await category.save();
+    res.redirect('/admin/categories');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error updating category');
+  }
+});
+
+
+// Admin delete category 
+app.post('/admin/category/delete/:id', requireAdmin, async (req, res) => {
+  try {
+    const cat = await Category.findById(req.params.id);
+    if (!cat) {
+      return res.status(404).send("Category not found");
+    }
+
+
+    // Delete post associated with that category
+    await postModel.deleteMany({ category: cat.name });
+
+    await Category.findByIdAndDelete(req.params.id);
+    res.redirect('/admin/categories');
+  } 
+  
+  catch (err) {
+    console.error(err);
+    res.status(500).send('Error deleting category');
+  }
+});
+
+
 // Admin: Delete User and their Posts
 
 app.post('/admin/delete/:id', requireAdmin, async (req, res) => {
-  console.log("User ID to delete:", req.params.id); // Debugging
+  // console.log("User ID to delete:", req.params.id); // Debugging   
   const user = await userModel.findById(req.params.id);
   if (!user){
      return res.status(404).send('User not found');

@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://cdn.tailwindcss.com"></script>
   <title>Add Category</title>
 </head>
+
 <body class="bg-zinc-900 text-white min-h-screen flex items-center justify-center p-6">
 
   <div class="bg-zinc-800 shadow-lg rounded-xl p-8 w-full max-w-md">
@@ -14,32 +16,60 @@
     <form action="/admin/category/add" method="POST" enctype="multipart/form-data" class="space-y-5">
       <div>
         <label for="name" class="block mb-2 text-gray-300">Category Name:</label>
-        <input 
-          type="text" 
-          id="name" 
-          name="name" 
-          required
+        <input type="text" id="name" name="name" required
           class="w-full px-4 py-2 bg-zinc-900 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400"
           placeholder="Enter category name">
       </div>
 
-      <div class="mb-4">
+
+      <div>
+        <label for="description" class="block mb-2 text-gray-300">Description</label>
+        <textarea type="text" id="description" name="description" required
+          class="w-full px-4 py-2 bg-zinc-900 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white placeholder-gray-400"
+          placeholder="Enter description"></textarea> 
+      </div>
+
+      <!-- <div class="mb-4">
     <label for="name" class="block mb-2 text-gray-300">Category Image</label>
     <input type="file" name="image" accept="image/*" required>
-  </div>
+     <img id="previewImage" class="mt-4 rounded-lg border border-gray-600 hidden w-64 h-40 object-cover" />
+  </div> -->
 
-      <button 
-        type="submit" 
+      <div>
+        <label class="block text-gray-300 mb-1">Category Image</label>
+        <input type="file" name="image" id="imageInput" class="block text-gray-400" accept="image/*" required>
+        <img id="previewImage" class="mt-4 rounded-lg border border-gray-600 hidden w-64 h-40 object-cover" />
+      </div>
+
+      <button type="submit"
         class="w-full py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition duration-200">
         Add Category
       </button>
     </form>
 
-    
+
     <div class="text-center mt-6">
       <a href="/admin/categories" class="text-blue-400 hover:underline">← Back to Categories</a>
     </div>
   </div>
 
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const previewImage = document.getElementById('previewImage');
+
+    imageInput.addEventListener('change', function (event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          previewImage.src = e.target.result;
+          previewImage.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+
 </body>
+
 </html>

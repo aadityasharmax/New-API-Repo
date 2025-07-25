@@ -11,7 +11,7 @@
 <div class="container mx-auto py-10">
     <h1 class="text-3xl font-bold mb-6">Edit Post</h1>
 
-    <form action="/post/edit/<%= post._id %>" method="POST" enctype="multipart/form-data" class="bg-zinc-800 p-6 rounded-lg shadow-md space-y-4">
+    <form action="/post/edit/<%= post.slug %>" method="POST" enctype="multipart/form-data" class="bg-zinc-800 p-6 rounded-lg shadow-md space-y-4">
         
         <!-- Title -->
         <div>

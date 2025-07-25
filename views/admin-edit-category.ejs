@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Category</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-zinc-900 text-white p-8">
+  <h1 class="text-2xl mb-6">Edit Category</h1>
+
+  <form action="/admin/category/edit/<%= category._id %>" method="POST" enctype="multipart/form-data" class="space-y-4">
+    <div>
+      <label>Name</label>
+      <input name="name" type="text" value="<%= category.name %>" class="w-full p-2 text-black" required>
+    </div>
+
+    <div>
+      <label>Description</label>
+      <textarea name="description" class="w-full p-2 text-black" required><%= category.description %></textarea>
+    </div>
+
+    <div>
+      <label>Image (optional)</label>
+      <input name="image" type="file" class="w-full p-2 text-black">
+      <p class="mt-2">Current image:</p>
+      <img src="<%= category.image %>" alt="Current image" class="w-32 mt-2">
+    </div>
+
+    <button type="submit" class="bg-blue-600 p-2 rounded">Update Category</button>
+  </form>
+
+  <a href="/admin/categories" class="text-blue-400 underline block mt-4">← Back to Categories</a>
+</body>
+</html>
